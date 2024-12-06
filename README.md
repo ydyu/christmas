@@ -1,4 +1,4 @@
-Script that creates a christmas tree.
+Simple script that draws a christmas tree.
 
 Usage:
 ```
