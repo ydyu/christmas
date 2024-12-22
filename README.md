@@ -5,7 +5,7 @@ Bash script Usage:
 bash christmas.sh <tree size, default 10> <1 for animation>
 ```
 
-Prints something like this (but colorful!)
+Prints something like this (see it in [animation](https://asciinema.org/a/695773))
 ```
           *
          ***
