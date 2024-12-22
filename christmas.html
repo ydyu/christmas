@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sparkly Christmas Tree</title>
+    <style>
+        body, html {
+            background: black;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        canvas {
+            position: absolute;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvasTree" style="z-index: 100; background-color: transparent;"></canvas>
+    <canvas id="canvas" style="z-index: 200; background-color: transparent;"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const canvasTree = document.getElementById('canvasTree');
+        const ctx = canvas.getContext('2d');
+        const ctxTree = canvasTree.getContext('2d');
+        canvas.width = canvasTree.width = window.innerWidth;
+        canvas.height = canvasTree.height = window.innerHeight;
+        // mouse position
+        let mouseX = canvas.width / 2;
+        let mouseY = canvas.height / 2 - canvas.height / 20;
+
+        canvas.addEventListener('click', (event) => {
+            mouseX = event.clientX;
+            mouseY = event.clientY;
+            ctxTree.clearRect(0,0,canvasTree.width,canvasTree.height)
+            drawChristmasTree();
+        });
+
+        class Star {
+            constructor() {
+                this.angle = Math.random() * Math.PI * 2; // Random angle
+                this.radius = Math.random() * canvas.width; // Random initial radius
+                this.size = Math.random() * 2 + 1; // Size of the star
+                this.speed = Math.random() * 1 + 0.5; // Speed of the star
+                this.originX = canvas.width / 2;
+                this.originY = canvas.height / 2;
+            }
+
+            update() {
+                // Increase the radius to make the star move outward
+                this.radius += this.speed;
+
+                // Calculate new x and y positions based on angle and radius
+                this.x = this.originX + this.radius * Math.cos(this.angle);
+                this.y = this.originY + this.radius * Math.sin(this.angle);
+
+                // Reset star position if it goes out of the screen
+                if (this.x > canvas.width || this.y > canvas.height ||
+                   this.x < 0 || this.y < 0
+                ) {
+                    this.angle = Math.random() * Math.PI * 2;
+                    this.radius = 0;
+                    this.speed = Math.random() * 0.5 + 0.5;
+                    this.originX = mouseX;
+                    this.originY = mouseY;
+                }
+
+                // Draw the star
+                ctx.beginPath();
+                ctx.fillStyle = 'white';
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        const stars = [];
+        const numStars = canvas.height / 10;
+        const n = canvas.height / 10;
+        const treeLevels = Math.ceil(Math.min(n / 10 + 10, 19));
+        console.log('Stars: ', numStars);
+        console.log('TreeLevel: ', treeLevels);
+
+        for (let i = 0; i < numStars; i++) {
+            stars.push(new Star());
+        }
+        var variation2 = 0;
+
+        function drawChristmasTree() {
+            const centerX = canvas.width / 2,
+                centerY = canvas.height / 2;
+            
+            // draw trunk
+            function drawTrunk(ctx) {
+                ctx.beginPath();
+                ctx.strokeStyle = "saddlebrown";
+                ctx.lineWidth = n/10 + 1;
+                ctx.moveTo(centerX, centerY * 2);
+                ctx.lineTo(centerX, centerY * 2 - n * 4.8 / 5);
+                ctx.closePath();
+                ctx.stroke();
+            }
+
+            function drawStar(ctx) {
+                var outerRadius = n / 5, innerRadius = n / 14;
+                ctx.beginPath();
+                ctx.moveTo(centerX + outerRadius, centerY - centerY/10);
+                for (let i = 1; i < 12; i++) {
+                    const radius = i % 2 === 0 ? innerRadius : outerRadius;
+                    const angle = (Math.PI / 5) * i + Math.PI / 2;
+                    ctx.lineTo(centerX + radius * Math.cos(angle), centerY + radius * Math.sin(angle) - centerY/10);
+                }
+                ctx.closePath();
+                ctx.fillStyle = 'yellow';
+                ctx.fill();
+            }
+
+            // var time = Date.now();
+            // var variation = ((Math.sin(time/500)) - 0.5) * Math.PI / 50;
+            function tree(ctx, d, s, x, y, angle) {
+                if(d == treeLevels || d % treeLevels > treeLevels * 0.75) {
+                    var red = Math.floor(d / treeLevels * 139);
+                    ctx.strokeStyle = `rgb(${red},69,19)`;
+                } else {
+                    const christmasColors = [
+                        // Heavy shades of green for the tree
+                        'DarkGreen', 'DarkGreen', 'DarkGreen', 'DarkGreen', 'DarkGreen',
+                        'DarkGreen', 'DarkGreen', 'DarkGreen', 'DarkGreen', 'DarkGreen',
+                        'FernGreen', 'FernGreen', 'FernGreen', 'FernGreen', 'FernGreen',
+                        'FernGreen', 'FernGreen', 'FernGreen', 'FernGreen', 'FernGreen',
+                        'ForestGreen', 'ForestGreen', 'ForestGreen', 'ForestGreen', 'ForestGreen',
+                        'ForestGreen', 'ForestGreen', 'ForestGreen', 'ForestGreen', 'ForestGreen',
+                        'Green', 'Green', 'Green', 'Green', 'Green',
+                        'LightGreen', 'LightGreen', 'LightGreen',
+                        'MediumSeaGreen', 'MediumSeaGreen', 'MediumSeaGreen',
+                        'SeaGreen', 'SeaGreen',
+                        'OliveDrab',
+                        'DarkOliveGreen', 'DarkOliveGreen', 'DarkOliveGreen', 'DarkOliveGreen', 'DarkOliveGreen',
+                        
+                        // Light colors for the lights
+                        'Crimson',
+                        'Gold','White',
+                        // 'Coral',
+                        // 'DarkTurquoise',
+                        'PowderBlue',
+                        // 'Tomato',
+                        // 'Salmon',
+                        // 'IndianRed', 'IndianRed',
+                        // 'Firebrick', 'Firebrick',
+                        // 'Maroon', 'Maroon',
+                        // 'DarkSalmon', 'DarkSalmon',
+                        // 'DarkOrchid',
+                        // 'DarkViolet',
+                        // 'Sienna', 'Sienna',
+                        // 'LightSeaGreen', 'LightSeaGreen',
+                        'MediumTurquoise', 'MediumTurquoise',
+                        // 'CadetBlue', 'CadetBlue',
+                        'LightCyan',
+                    ];
+                    ctx.strokeStyle = `${christmasColors[Math.floor(Math.random() * christmasColors.length)]}`;
+                    //ctx.strokeStyle = 'darkgreen';
+                }
+                
+                ctx.lineWidth = Math.log(d * d * d);
+            
+                if (d <= Math.random() * 2) return;
+            
+                // Calculate the end point of the line
+                var newX = x + s * Math.cos(angle);
+                var newY = y + s * Math.sin(angle);
+            
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.lineTo(newX, newY);
+                ctx.stroke();
+            
+                // Recursive calls for the branches
+                var variation = (Math.random() - 0.5) * Math.PI / 2 / d;
+            
+                // Branch 1
+                tree(ctx, d - 1, s * 0.8, newX, newY, angle);
+            
+                // Branch 2
+                tree(ctx, d - 3, s * 0.5, newX, newY, angle + Math.PI * 2 / 3 - variation);
+            
+                // Branch 3
+                tree(ctx, d - 3, s * 0.5, newX, newY, angle + Math.PI * 4 / 3 + variation);
+            }
+
+            
+            drawTrunk(ctxTree);
+            tree(ctxTree, treeLevels, n, centerX, centerY*2 - centerY/10, -Math.PI / 2); // Start from the bottom of the canvas
+            drawStar(ctxTree);
+            
+        }
+
+        drawChristmasTree();
+
+        var lastUpdate = Date.now(), interval = 300 * (Math.random() * 10 + 1);
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            stars.forEach(star => {
+                star.update();
+            });
+
+            if ((Date.now() - lastUpdate) > interval) {
+                ctxTree.clearRect(0, 0, canvasTree.width, canvasTree.height);
+                drawChristmasTree();
+                lastUpdate = Date.now();
+                interval = 300 * (Math.random() * 10 + 1);
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>

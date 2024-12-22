@@ -55,17 +55,17 @@ function print_tree {
 }
 
 # default tree height is 10
-# if second argument is 1 do animation
-if [ $# -eq 2 ] && [ $2 -eq 1 ]; then
+# if second argument is a number do animation
+if [ -n "$2" ]; then
     clear
     tput civis
-    for ((i=1; i<=30; i++)); do
+    for ((i=1; i<=$2; i++)); do
         tput home
         print_tree ${1:-10}
         sleep 0.08
     done
     tput cnorm
-    exit
-fi
+else
 #otherwise, print the tree
-print_tree ${1:-10}
+    print_tree ${1:-10}
+fi
