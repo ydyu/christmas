@@ -2,7 +2,7 @@ Simple scripts that draw christmas tree.
 
 Bash script Usage:
 ```
-bash christmas.sh <tree size, default 10> <1 for animation>
+bash christmas.sh <tree size, default 10> <animation duration in 1/10sec>
 ```
 
 Prints something like this (see it in [animation](https://asciinema.org/a/695773))
