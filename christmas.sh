@@ -62,7 +62,7 @@ if [ -n "$2" ]; then
     for ((i=1; i<=$2; i++)); do
         tput home
         print_tree ${1:-10}
-        sleep 0.08
+        sleep 0.1
     done
     tput cnorm
 else
